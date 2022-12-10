@@ -79,7 +79,8 @@ const performMoves = (
 
     const lift = stacks[from].slice(quantity * -1);
     stacks[from] = stacks[from].slice(0, stacks[from].length - quantity);
-    stacks[to] = stacks[to].concat(lift.reverse());
+    // stacks[to] = stacks[to].concat(lift.reverse()); // only reverse for part 1
+    stacks[to] = stacks[to].concat(lift);
   }
   return stacks;
 };

@@ -74,8 +74,8 @@ const performMoves = (
     // console.log(`move ${index + 1}`);
 
     const quantity = move[0];
-    const from = move[1] - 1 + '';
-    const to = move[2] - 1 + '';
+    const from = move[1] - 1;
+    const to = move[2] - 1;
 
     const lift = stacks[from].slice(quantity * -1);
     stacks[from] = stacks[from].slice(0, stacks[from].length - quantity);
@@ -87,3 +87,10 @@ const performMoves = (
 const finalStack = performMoves(moves, { ...stacks });
 console.table(stacks);
 console.table(finalStack);
+
+const answer: string[] = [];
+for (const column in finalStack) {
+  answer.push(finalStack[column].pop() as string);
+}
+
+console.log(answer.join(''));

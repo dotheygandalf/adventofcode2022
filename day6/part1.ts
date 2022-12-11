@@ -12,7 +12,7 @@ const findMarker = (input: string): number => {
   let marker = '';
   console.log(input);
   for (let i = 1; i < input.length - MARKER_LENGTH; i++) {
-    let currentCandidate = input.substring(i, i + MARKER_LENGTH);
+    const currentCandidate = input.substring(i, i + MARKER_LENGTH);
     for (const [index, char] of currentCandidate.split('').entries()) {
       if (
         Array.from(currentCandidate.matchAll(new RegExp(char, 'g'))).length > 1

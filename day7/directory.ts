@@ -5,18 +5,29 @@ export class Directory {
   private files: File[];
   private directories: Directory[];
   private parent: Directory | null;
+  private size: number;
 
   constructor(
     name: string,
     parent: Directory | null = null,
     files: File[] = [],
-    directories: Directory[] = []
+    directories: Directory[] = [],
+    size = 0
   ) {
     this.name = name;
     this.files = files;
     this.directories = directories;
     this.parent = parent;
+    this.size = size;
   }
+
+  setSize = (size: number) => {
+    this.size = size;
+  };
+
+  getSize = (): number => {
+    return this.size;
+  };
 
   addFile = (file: File) => {
     this.files.push(file);
@@ -58,9 +69,5 @@ export class Directory {
       }
     }
     return false;
-  };
-
-  public getSize = (): number => {
-    return 0;
   };
 }

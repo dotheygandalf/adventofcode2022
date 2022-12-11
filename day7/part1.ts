@@ -67,7 +67,7 @@ const printNode = (node: Directory, indentation = 1): string => {
     })
     .join('\n');
 
-  let output = `— ${node.getName()} (dir)`;
+  let output = `— ${node.getName()} (dir size=${node.getSize()})`;
 
   if (files) {
     output += `\n${files}`;
@@ -79,6 +79,74 @@ const printNode = (node: Directory, indentation = 1): string => {
   return output;
 };
 
+let sum = 0;
+
+const calculateSize = (node: Directory): number => {
+  let folderSize = 0;
+  folderSize += node
+    .getFiles()
+    .map((file) => {
+      return file.getSize();
+    })
+    .reduce((previous, current) => {
+      return previous + current;
+    }, 0);
+
+  folderSize += node
+    .getDirectories()
+    .map((directory) => {
+      return calculateSize(directory);
+    })
+    .reduce((previous, current) => {
+      return previous + current;
+    }, 0);
+
+  node.setSize(folderSize);
+  if (folderSize <= 100000) {
+    sum += folderSize;
+  }
+
+  return folderSize;
+};
+
+const findDirectoryToDelete = (
+  node: Directory,
+  neededFreeSpace: number
+): Directory => {
+  if (
+    node.getSize() >= neededFreeSpace &&
+    node
+      .getDirectories()
+      .map((directory) => {
+        return directory.getSize();
+      })
+      .reduce((previous, current) => {
+        return previous + current;
+      }, 0) < neededFreeSpace
+  ) {
+    console.log('node to delete:', node.getName(), node.getSize());
+    return node;
+  } else {
+    node.getDirectories().map((directory) => {
+      return findDirectoryToDelete(directory, neededFreeSpace);
+    });
+  }
+  return node;
+};
+
 const directory = parseLines(lines);
 
+calculateSize(directory);
+
 console.log(printNode(directory));
+console.log(`sum: ${sum}`);
+
+console.log(`total: ${directory.getSize()}`);
+console.log(`free: ${70000000 - directory.getSize()}`);
+
+const neededFreeSpace = 30000000 - (70000000 - directory.getSize());
+
+// console.log(findDirectoryToDelete(directory, neededFreeSpace));
+findDirectoryToDelete(directory, neededFreeSpace);
+
+console.log(`needs: ${neededFreeSpace}`);

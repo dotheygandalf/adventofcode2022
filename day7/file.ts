@@ -7,6 +7,10 @@ export class File {
     this.size = size;
   }
 
+  getSize = (): number => {
+    return this.size;
+  };
+
   toString = (): string => {
     return `${this.name} (file, size=${this.size})`;
   };

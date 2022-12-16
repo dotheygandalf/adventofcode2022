@@ -19,6 +19,8 @@ const monkes: {
   [key: number]: Monke;
 } = {};
 
+let allDivisible = 1;
+
 let items: number[] | undefined,
   operation: Function | undefined,
   test: Function | undefined;
@@ -39,17 +41,21 @@ while (lineCounter < lines.length) {
       `return ${lines[lineCounter].replace('Operation: new = ', '')}`
     );
   } else if (lineCounter % 7 === 3) {
+    allDivisible *= parseInt(
+      lines[lineCounter].replace('Test: divisible by ', '')
+    );
     test = new Function(
       'input',
-      `let worryLevel = Math.floor(input / 3);
+      'allDivisible',
+      `let nextWorryLevel = input % allDivisible;
       
-      if(worryLevel % ${parseInt(
+      if(nextWorryLevel % ${parseInt(
         lines[lineCounter].replace('Test: divisible by ', '')
       )} === 0) {
-        return [worryLevel, ${parseInt(
+        return [nextWorryLevel, ${parseInt(
           lines[lineCounter + 1].replace('If true: throw to monkey ', '')
         )}]
-      } else { return [worryLevel, ${parseInt(
+      } else { return [nextWorryLevel, ${parseInt(
         lines[lineCounter + 2].replace('If false: throw to monkey ', '')
       )}]}`
     );
@@ -65,18 +71,22 @@ while (lineCounter < lines.length) {
   lineCounter++;
 }
 
-console.log(monkes);
-
-for (let i = 0; i < 20; i++) {
+for (let i = 0; i < 10000; i++) {
   for (const monkeNumber in monkes) {
     while (monkes[monkeNumber].items.length > 0) {
       const firstItem = monkes[monkeNumber].items.shift();
       const worryLevel = monkes[monkeNumber].operation(firstItem);
       monkes[monkeNumber].inspected++;
-      const testedWorry = monkes[monkeNumber].test(worryLevel);
+      const testedWorry = monkes[monkeNumber].test(worryLevel, allDivisible);
       monkes[testedWorry[1]].items.push(testedWorry[0]);
     }
   }
 }
 
-console.log(monkes);
+const sortedTosses = Object.values(monkes)
+  .map((monke) => monke.inspected)
+  .sort((a, b) => {
+    return b - a;
+  });
+
+console.log(sortedTosses[0] * sortedTosses[1]);

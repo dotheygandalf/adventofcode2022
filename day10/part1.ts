@@ -13,6 +13,9 @@ let waitCounter = 0;
 
 let sumOfSignalStrength = 0;
 
+const crt: string[] = [];
+let currentScanLine = '';
+
 while (lineCounter < lines.length) {
   if (
     clockCounter === 20 ||
@@ -24,6 +27,25 @@ while (lineCounter < lines.length) {
   ) {
     console.log(clockCounter, total);
     sumOfSignalStrength += clockCounter * total;
+  }
+
+  console.log(clockCounter % 40);
+
+  if (
+    clockCounter % 40 === total ||
+    clockCounter % 40 === total + 1 ||
+    clockCounter % 40 === total + 2 ||
+    (clockCounter % 40 === 0 &&
+      (40 === total || 40 === total + 1 || 40 === total + 2))
+  ) {
+    currentScanLine += '#';
+  } else {
+    currentScanLine += '.';
+  }
+
+  if (clockCounter % 40 === 0) {
+    crt.push(currentScanLine);
+    currentScanLine = '';
   }
 
   const line = lines[lineCounter];
@@ -47,4 +69,6 @@ while (lineCounter < lines.length) {
   }
 }
 
-console.log('sumOfSignalStrength', sumOfSignalStrength);
+// console.log('sumOfSignalStrength', sumOfSignalStrength);
+
+console.log(crt.join('\n'));
